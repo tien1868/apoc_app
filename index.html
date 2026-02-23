@@ -567,10 +567,35 @@ function renderDZ() {
 }
 function delF(i){files.splice(i,1);renderDZ();}
 function clearAll(){files=[];renderDZ();}
-function removeBg(){
+async function removeBg(){
+  if(!files.length) return;
   const b=document.getElementById('bg-btn');
-  b.innerHTML='<span class="spin">◌</span> Processing...';b.disabled=true;
-  setTimeout(()=>{b.innerHTML='✓ Background Removed';b.disabled=false;b.style.color='var(--green)';b.style.borderColor='var(--green-b)';},2200);
+  b.innerHTML='<span class="spin">◌</span> Removing backgrounds...';b.disabled=true;
+  b.style.color='';b.style.borderColor='';
+  try{
+    const fd=new FormData();
+    files.forEach(f=>fd.append('images',f));
+    const resp=await fetch(`${API}/remove-bg`,{method:'POST',body:fd});
+    if(!resp.ok){const e=await resp.json();throw new Error(e.error||`HTTP ${resp.status}`);}
+    const result=await resp.json();
+    if(!result.success) throw new Error(result.error||'Background removal failed');
+    const newFiles=[];
+    for(let i=0;i<result.images.length;i++){
+      const b64=result.images[i];
+      const bin=atob(b64);const arr=new Uint8Array(bin.length);
+      for(let j=0;j<bin.length;j++) arr[j]=bin.charCodeAt(j);
+      const blob=new Blob([arr],{type:'image/jpeg'});
+      newFiles.push(new File([blob],files[i]?.name||`photo_${i+1}.jpg`,{type:'image/jpeg'}));
+    }
+    files=newFiles;
+    renderDZ();
+    b.innerHTML='✓ Background Removed';b.disabled=false;
+    b.style.color='var(--green)';b.style.borderColor='var(--green-b)';
+  }catch(err){
+    b.innerHTML='✗ Failed';b.disabled=false;
+    b.style.color='var(--red)';b.style.borderColor='rgba(224,92,92,.28)';
+    setTimeout(()=>{b.innerHTML='Remove Background';b.style.color='';b.style.borderColor='';},3000);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -731,6 +756,7 @@ function buildReport(raw) {
     price_low:    raw.suggested_price_low || 0,
     price_high:   raw.suggested_price_high || 0,
     price_rec:    raw.suggested_price_low || 0,
+    price_reasoning: raw.price_reasoning || '',
     conf_brand:   raw.confidence === 'high' ? 90 : raw.confidence === 'medium' ? 70 : 50,
     conf_cat:     raw.confidence === 'high' ? 88 : 65,
     conf_gender:  95,
@@ -764,11 +790,9 @@ function buildReport(raw) {
     <div class="g2" style="margin-bottom:12px">
       <div class="dbox">
         <div class="lbl">Recommended List Price</div>
-        <div class="dval price">$${d.price_rec}</div>
+        <div class="dval price">$${d.price_low} – $${d.price_high}</div>
         <div class="dsub">
-          Range $${d.price_low} – $${d.price_high}<br>
-          ${d.comps} eBay sold comps · Avg sold $${d.sold_avg}<br>
-          ${Math.round(d.price_rec/d.msrp*100)}% of $${d.msrp.toLocaleString()} MSRP
+          ${d.price_reasoning || 'No pricing data available'}
         </div>
       </div>
       <div class="dbox">
