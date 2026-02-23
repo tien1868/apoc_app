@@ -86,7 +86,7 @@
     .up-ico{width:44px;height:44px;border:1.5px solid var(--bdr-h);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:18px}
     .up-title{font-size:14px;font-weight:700;margin-bottom:3px;text-align:center}
     .up-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--t2);letter-spacing:.04em;text-align:center}
-    .img-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%}
+    .img-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%}
     .img-cell{aspect-ratio:3/4;border-radius:6px;border:1px solid var(--bdr);overflow:hidden;position:relative;background:var(--surf2)}
     .img-cell img{width:100%;height:100%;object-fit:cover;display:block}
     .img-cell .del{position:absolute;top:5px;right:5px;width:20px;height:20px;background:rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.12);border-radius:50%;color:var(--t2);font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
@@ -409,7 +409,7 @@
     <div class="card-hd">
       <div class="card-icon">01</div>
       <div class="card-title">Capture Garment Photos</div>
-      <div class="card-badge">5 images max</div>
+      <div class="card-badge">12 images max</div>
     </div>
     <div class="card-body">
       <div class="drop-zone" id="dz" onclick="document.getElementById('fi').click()">
@@ -740,7 +740,7 @@ const dz = document.getElementById('dz');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('over'));
 dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('over'); addFiles(e.dataTransfer.files); });
-function addFiles(f) { Array.from(f).forEach(x => { if (files.length < 5) files.push(x); }); renderDZ(); }
+function addFiles(f) { Array.from(f).forEach(x => { if (files.length < 12) files.push(x); }); renderDZ(); }
 function renderDZ() {
   if (!files.length) {
     dz.className = 'drop-zone';
@@ -750,7 +750,7 @@ function renderDZ() {
     dz.className = 'drop-zone filled';
     let h = '<div class="img-grid">';
     files.forEach((f,i) => { const u=URL.createObjectURL(f); h+=`<div class="img-cell" onclick="openEditor(${i})"><img src="${u}"/><button class="del" onclick="event.stopPropagation();delF(${i})">✕</button></div>`; });
-    if (files.length<5) h+=`<div class="img-add" onclick="event.stopPropagation();document.getElementById('fi').click()">+</div>`;
+    if (files.length<12) h+=`<div class="img-add" onclick="event.stopPropagation();document.getElementById('fi').click()">+</div>`;
     h+='</div>';
     dz.innerHTML=h; dz.onclick=null;
   }
