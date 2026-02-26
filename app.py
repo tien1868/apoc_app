@@ -2,6 +2,7 @@
 APOC² — Garment Intelligence Platform · Tags Technologies LLC
 """
 
+from typing import List
 from fastapi import FastAPI, UploadFile, File, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -362,7 +363,7 @@ def _remove_bg_one(img_data):
     return {"b64": base64.b64encode(buf.getvalue()).decode(), "path": out.name}
 
 @fapp.post("/remove-bg")
-async def remove_bg_api(images: list[UploadFile] = File(...)):
+async def remove_bg_api(images: List[UploadFile] = File(...)):
     global _rembg_session, _rembg_failed, _rembg_error, _last_data
     if not images:
         return JSONResponse({"error": "No images provided"}, status_code=400)
@@ -395,7 +396,7 @@ async def remove_bg_api(images: list[UploadFile] = File(...)):
 
 # ── Analyze garment ─────────────────────────────────────────────────────────
 @fapp.post("/analyze")
-async def analyze_api(images: list[UploadFile] = File(...), gender: str = Form("")):
+async def analyze_api(images: List[UploadFile] = File(...), gender: str = Form("")):
     global _last_data
     _last_data = {}
     if not images:
