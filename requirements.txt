@@ -1,8 +1,9 @@
-anthropic[bedrock]
-fastapi
-uvicorn
-requests
-httpx
-rembg
-pillow
-onnxruntime
+anthropic[bedrock]>=0.39,<1.0
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.29,<1.0
+httpx>=0.27,<1.0
+python-multipart>=0.0.9,<1.0
+Pillow>=10.0,<12.0
+rembg>=2.0,<3.0
+onnxruntime>=1.17,<2.0
+boto3>=1.34,<2.0

@@ -1,0 +1,21 @@
+__pycache__
+*.pyc
+*.pyo
+.env
+.env.local
+.env*.local
+*.jpg
+*.png
+*.gif
+*.bmp
+queue.json
+.git
+.github
+.claude
+.vercel
+node_modules
+*.md
+index.html
+index_bk.html
+bulk.html
+index (9).html

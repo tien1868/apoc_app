@@ -1,0 +1,10 @@
+.vercel
+.env
+.env.local
+.env*.local
+__pycache__
+*.pyc
+*.pyo
+.claude
+queue.json
+*.tmp
