@@ -2,6 +2,7 @@ anthropic[bedrock]
 fastapi
 uvicorn
 requests
+httpx
 rembg
 pillow
 onnxruntime
