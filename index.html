@@ -1456,14 +1456,13 @@ function buildReport(raw) {
         <div class="spec-v"><input class="spec-inp" id="sp-catid" value="${d.cat_id}" /></div>
       </div>
 
-      <div class="spec-row">
-        <div class="spec-k">SKU</div>
-        <div class="spec-v"><input class="spec-inp" id="sp-sku" value="${genSku(d)}" /></div>
-        <div class="spec-k r2"></div>
-        <div class="spec-v"></div>
-      </div>
-
     </div>
+
+    <!-- CUSTOM LABEL / INVENTORY # -->
+    <div class="lbl" style="margin:12px 0 8px">Custom Label / Inventory #
+      <span style="color:var(--t3);font-size:8px;letter-spacing:.04em"> · Your SKU — appears in Seller Hub, not visible to buyers</span>
+    </div>
+    <input class="f-inp" id="sp-sku" value="" placeholder="${genSku(d)} (auto-generated if left blank)" style="font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.04em;margin-bottom:12px" />
 
     <!-- MEASUREMENTS -->
     <div class="lbl" style="margin:12px 0 8px">Measurements (inches)
@@ -1560,7 +1559,7 @@ async function publish() {
       occasion:    document.getElementById('sp-occasion')?.value || '',
       season:      document.getElementById('sp-season')?.value || '',
       lining_material: document.getElementById('sp-lining')?.value || '',
-      sku:         document.getElementById('sp-sku')?.value || '',
+      sku:         document.getElementById('sp-sku')?.value || genSku(analysisData),
       features:    (document.getElementById('features-area')?.value || '').split(',').map(s=>s.trim()).filter(Boolean),
       care_instructions: document.getElementById('care-area')?.value || '',
       m_chest:     document.getElementById('m-chest')?.value || '',
