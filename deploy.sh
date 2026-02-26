@@ -12,15 +12,22 @@ INSTANCE_CPU="1 vCPU"
 INSTANCE_MEMORY="2 GB"
 PORT=8080
 
-# ── Load .env file ──────────────────────────────────────────────────────────
+# ── Load .env file (safe parser — only reads KEY=VALUE lines) ───────────────
 if [ ! -f .env ]; then
   echo "ERROR: .env file not found. Copy .env.example to .env and fill in values."
   exit 1
 fi
 
-set -a
-source .env
-set +a
+# Only export well-formed KEY=VALUE lines, skip comments and malformed lines
+while IFS= read -r line || [ -n "$line" ]; do
+  # Skip blank lines, comments, lines without =
+  [[ -z "$line" || "$line" =~ ^[[:space:]]*# || ! "$line" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] && continue
+  export "$line"
+done < .env
+
+# Provide defaults for optional vars
+export EBAY_RUNAME="${EBAY_RUNAME:-}"
+export ENVIRONMENT="${ENVIRONMENT:-production}"
 
 echo "▸ Region: ${AWS_REGION}"
 
@@ -207,10 +214,10 @@ HEALTH_RESPONSE=$(curl -sf "https://${SERVICE_URL}/health" 2>&1) || {
   exit 1
 }
 
-echo "${HEALTH_RESPONSE}" | python3 -m json.tool
+echo "${HEALTH_RESPONSE}" | python -m json.tool
 
 # Validate response
-HEALTH_STATUS=$(echo "${HEALTH_RESPONSE}" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status',''))" 2>/dev/null || true)
+HEALTH_STATUS=$(echo "${HEALTH_RESPONSE}" | python -c "import sys,json; print(json.load(sys.stdin).get('status',''))" 2>/dev/null || true)
 if [ "${HEALTH_STATUS}" != "healthy" ]; then
   echo "ERROR: Health check returned status '${HEALTH_STATUS}' (expected 'healthy')"
   exit 1
