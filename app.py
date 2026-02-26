@@ -16,7 +16,7 @@ claude = anthropic.AnthropicBedrock(
     aws_secret_key=os.environ.get("AWS_SECRET_ACCESS_KEY", ""),
     aws_region=os.environ.get("AWS_REGION", "us-east-1"),
 )
-CLAUDE_MODEL = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+CLAUDE_MODEL = "us.anthropic.claude-sonnet-4-20250514-v1:0"
 
 EBAY_APP_ID  = os.environ.get("EBAY_APP_ID",  "")
 EBAY_DEV_ID  = os.environ.get("EBAY_DEV_ID",  "")
